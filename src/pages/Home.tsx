@@ -1,14 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import { fetchUsers } from "../api/api";
-import Counter from "../features/counter/Counter";
-import { User } from "../types/types";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import FinancialChart from "../components/FinancialChart";
+import { fetchStart } from "../features/finnhub/finnhubSlice";
+import { useFinnhubData } from "../features/finnhub/useFinnhubData";
 
 const Home: React.FC = () => {
-  const { data, error, isLoading } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: fetchUsers,
-  });
+  const dispatch = useDispatch();
+  const symbol = "AAPL";
+  const { error, isLoading } = useFinnhubData(symbol);
+
+  useEffect(() => {
+    dispatch(fetchStart());
+  }, [dispatch]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -23,18 +26,8 @@ const Home: React.FC = () => {
       <h1>Home Page</h1>
       <p>Welcome to the home page!</p>
 
-      <Counter />
-
-      <div>
-        <h1>Users</h1>
-        <ul>
-          {data?.map((user) => (
-            <li key={user.id}>
-              {user.name} ({user.email})
-            </li>
-          ))}
-        </ul>
-      </div>
+      <h1>Finnhub Stock Data</h1>
+      <FinancialChart />
     </div>
   );
 };

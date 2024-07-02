@@ -1,11 +1,12 @@
 import axios from "axios";
-import { User } from "../types/types";
 
-const fetchUsers = async (): Promise<User[]> => {
-  const { data } = await axios.get(
-    "https://jsonplaceholder.typicode.com/users"
+const fetchFinnhubData = async (symbol: string) => {
+  const apiKey = import.meta.env.VITE_FINNHUB_API_KEY as string;
+
+  const response = await axios.get(
+    `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
   );
-  return data;
+  return response.data;
 };
 
-export { fetchUsers };
+export { fetchFinnhubData };
